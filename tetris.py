@@ -24,10 +24,10 @@ pygame.display.update()
 running = True
 
 speed = 0
-kinds = ('square', 'stick', 'L', 'J', 'S', 'Z')
+kinds = ('square', 'stick', 'L', 'J', 'S', 'Z', 'T')
 bc = 0
 play_field = PlayField(DISPLAY, WIDTH, HEIGHT, SIDE_LENGTH)
-block = Block(DISPLAY, WIDTH, HEIGHT, SIDE_LENGTH, kinds[bc%6])
+block = Block(DISPLAY, WIDTH, HEIGHT, SIDE_LENGTH, kinds[bc%7])
 dead_blocks = []
 
 while running:
@@ -49,7 +49,7 @@ while running:
             dead_rects.append(rect)
         dead_blocks.append(block)
         bc += 1
-        block = Block(kinds[bc%6])
+        block = Block(DISPLAY, WIDTH, HEIGHT, SIDE_LENGTH, kinds[bc%7])
     if block.hard_drop:
         for i in range(10):
             block.drop(dead_rects)

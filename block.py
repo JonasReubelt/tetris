@@ -54,6 +54,12 @@ class Block(object):
                           pygame.Rect([4 * self.side_length, -1 * self.side_length, self.side_length, self.side_length]),
                           pygame.Rect([4 * self.side_length, 0, self.side_length, self.side_length])]
             self.color = colors.RED
+        if kind == 'T':
+            self.rects = [pygame.Rect([4 * self.side_length, 0 * self.side_length, self.side_length, self.side_length]),
+                          pygame.Rect([5 * self.side_length, 0 * self.side_length, self.side_length, self.side_length]),
+                          pygame.Rect([6 * self.side_length, 0 * self.side_length, self.side_length, self.side_length]),
+                          pygame.Rect([5 * self.side_length, -1 * self.side_length, self.side_length, self.side_length])]
+            self.color = colors.VIOLET
 
     def grid_it_up(self):
         self.grids = self.rects[:]
