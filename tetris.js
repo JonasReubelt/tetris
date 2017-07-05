@@ -17,26 +17,36 @@ var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "green", 5: "#0d37e5"
 var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
-var freq = 0.1;
+var freq = 1.;
 var tetris;
 var matrix;
-
+var points = 0;
+var bag_counter = 0;
+var current_bag = ["I", "T", "Z", "S", "J", "L", "O"];
+var next_bag = ["I", "T", "Z", "S", "J", "L", "O"];
+current_bag = shuffle(current_bag);
+next_bag = shuffle(next_bag);
+var next_tetris;
+var total_cleared = 0;
+var fps = 60.;
+var fps_counter = 0;
 window.onload = function() {
     init();
     canvas = document.getElementById("canvas");
-    canvas.width = world.width;
+    canvas.width = world.width*2;
     canvas.height = world.height;
     ctx = canvas.getContext("2d");
 
-    var fps = 60.;
+
     setInterval(update, 1000./fps);
-    setInterval(heartbeat, 1000./freq);
+    //setInterval(heartbeat, 1000./freq);
 
     document.addEventListener("keydown", keyDown);
 
 }
 
 function update(){
+
   draw_canvas();
 
   draw_matrix();
@@ -50,7 +60,15 @@ function update(){
   }
 
   draw_tetris();
+  draw_next_tetris();
   //draw_grid();
+  draw_points();
+  if (fps_counter>=fps){
+    heartbeat();
+    fps_counter = 0;
+  }
+  //alert(fps_counter);
+  fps_counter += freq;
 }
 
 function init(){
@@ -62,7 +80,9 @@ function draw_canvas(){
   ctx.lineWidth = '5';
   ctx.fillStyle = 'black';
   ctx.strokeStyle = 'white';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, canvas.width/2, canvas.height);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(canvas.width/2, 0, canvas.width, canvas.height);
 }
 function draw_tetris(){
   var c = tetris_color();
@@ -70,8 +90,30 @@ function draw_tetris(){
   var positions = tetris.pos;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(tetris.x + pos[0], tetris.y + pos[1], c);
+    draw_block(tetris.x + pos[0], tetris.y + pos[1]);
   }
+}
+
+function draw_next_tetris(){
+  var c = colors[tcolors[next_tetris.id]];
+  ctx.fillStyle = c;
+  var positions = next_tetris.pos;
+  for (var i=0; i<4; i++){
+    var pos = positions[i];
+    draw_block(14 + pos[0], 15 + pos[1]);
+  }
+}
+
+function draw_points(){
+  var p = points.toString();
+  ctx.font = "20px Arial";
+  ctx.fillStyle = 'black';
+  ctx.fillText("Points:",world.width + 100,50);
+  ctx.fillText(p,world.width + 100,100);
+  ctx.fillText("Cleared lines:",world.width + 100,200);
+  ctx.fillText(total_cleared,world.width + 100,250);
+  ctx.fillText("Level:",world.width + 100,300);
+  ctx.fillText(freq,world.width + 100,350);
 }
 
 function draw_grid(){
@@ -85,19 +127,18 @@ function draw_grid(){
   ctx.lineTo(world.width,world.height-1);
   ctx.moveTo(world.width-1,0);
   ctx.lineTo(world.width-1,world.height);
-  for (var i=0; i<blocks_x; i++){
+  /*for (var i=0; i<blocks_x; i++){
     ctx.moveTo(i * block_size,0);
     ctx.lineTo(i * block_size,world.height);
   }
   for (var i=0; i<blocks_y; i++){
     ctx.moveTo(0, i * block_size);
     ctx.lineTo(world.width, i * block_size);
-  }
+  }*/
   ctx.stroke();
 }
 
-function draw_block(x, y, c){
-  ctx.fillStyle = c;
+function draw_block(x, y){
   ctx.fillRect(x * block_size, y * block_size, block_size, block_size);
 }
 
@@ -136,6 +177,14 @@ function full_line_detection(){
     }
   }
   matrix = new_matrix;
+  add_points(completed_lines.length);
+  total_cleared += completed_lines.length;
+  freq = Math.floor(total_cleared/10) + 1;
+  //alert(freq);
+}
+
+function add_points(n_lines){
+  points += n_lines * n_lines * 100;
 }
 
 function tetris_dies(){
@@ -146,10 +195,31 @@ function tetris_dies(){
 }
 
 function new_tetris(){
-  var keys = Object.keys(tetrii);
-  var new_id = keys[Math.floor(Math.random() * keys.length)];
-  var pos = tetrii["I"];
-  tetris = {"id": "I", "x": 5, "y": -1, "pos": pos, "o": 0};
+  if (bag_counter == 5){
+    next_bag = shuffle(next_bag);
+  }
+  if (bag_counter == 7){
+    //alert("switch to next bag");
+    for (var i=0; i<7;i++){
+      current_bag[i] = next_bag[i];
+    }
+
+    bag_counter = 0;
+  }
+  if (bag_counter < 6){
+    nb = current_bag[bag_counter+1];
+    var npos = tetrii[nb];
+    next_tetris = {"id": nb, "x": 5, "y": -1, "pos": npos, "o": 0};
+  } else {
+    nb = next_bag[0];
+    var npos = tetrii[nb];
+    next_tetris = {"id": nb, "x": 5, "y": -1, "pos": npos, "o": 0};
+  }
+
+  b = current_bag[bag_counter];
+  bag_counter += 1;
+  var pos = tetrii[b];
+  tetris = {"id": b, "x": 5, "y": -1, "pos": pos, "o": 0};
 }
 
 function collision_detected(x, y, rot){
@@ -158,6 +228,7 @@ function collision_detected(x, y, rot){
   var positions_rot;
   if (rot){
     positions_new = rotated(tetris.pos);
+
   } else{
     positions_new = tetris.pos;
   }
@@ -178,25 +249,27 @@ function collision_detected(x, y, rot){
 
 function rotated(pos){
   //return pos;
+  var tet;
+  var new_pos;
   if (tetris.id=="O"){
     return pos;
   }
   if (tetris.id=="I"){
-    if (tetris.o == 0){
-      tetris["o"] = 1;
-      return [[-1, 1], [0, 1], [1, 1], [2, 1]];
+    if (pos[0] == [0, 0]){
+      new_pos = [[-1, 1], [0, 1], [1, 1], [2, 1]];
+      return new_pos;
     }
-    if (tetris.o == 1){
-      tetris["o"] = 2;
-      return [[1, 0], [1, 1], [1, 2], [1, 3]];
+    else if (pos[0] == [-1, 1]){
+      new_pos = [[1, 0], [1, 1], [1, 2], [1, 3]];
+      return new_pos;
     }
-    if (tetris.o == 2){
-      tetris["o"] = 3;
-      return [[-1, 2], [0, 2], [1, 2], [2, 2]];
+    else if (pos[0] == [1, 0]){
+      new_pos = [[-1, 2], [0, 2], [1, 2], [2, 2]];
+      return new_pos;
     }
-    if (tetris.o == 3){
-      tetris["o"] = 0;
-      return [[0, 0], [0, 1], [0, 2], [0, 3]];
+    else if (pos[0] == [-1, 2]){
+      new_pos = [[0, 0], [0, 1], [0, 2], [0, 3]];
+      return new_pos;
     }
 
   }
@@ -212,11 +285,13 @@ function rotated(pos){
     }
   }
   return pos_new;
+
 }
 
 function rotate(){
   //alert(tetris.pos);
-  tetris.pos = rotated(tetris.pos);
+  var new_pos = rotated(tetris.pos);
+  tetris.pos = new_pos;
   //alert(tetris.pos);
 }
 
@@ -237,7 +312,7 @@ function keyDown(evt){
     case 38:
       rotate();
       rot = true;
-      alert(tetris.o);
+      //alert(tetris.o);
       break;
 
   }
@@ -297,4 +372,15 @@ function matrix_collision(x, y){
     }
   }
   return false;
+}
+
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length; i; i--) {
+    j = Math.floor(Math.random() * i);
+    x = a[i - 1];
+    a[i - 1] = a[j];
+    a[j] = x;
+  }
+  return a;
 }
