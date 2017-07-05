@@ -184,7 +184,7 @@ function full_line_detection(){
 }
 
 function add_points(n_lines){
-  points += n_lines * n_lines * 100;
+  points += n_lines * n_lines * 100 * freq;
 }
 
 function tetris_dies(){
