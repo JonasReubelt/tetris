@@ -75,6 +75,12 @@ function update(){
 function init(){
   new_tetris();
   matrix = zeros([blocks_y, blocks_x]);
+  myAudio = new Audio('sounds/Tetristitle.m4a');
+  myAudio.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
+  myAudio.play();
 }
 
 function draw_canvas(){
@@ -181,6 +187,16 @@ function full_line_detection(){
   add_points(completed_lines.length);
   total_cleared += completed_lines.length;
   freq = Math.floor(total_cleared/10) + 1;
+  if (completed_lines.length == 4){
+    var snd = new Audio("sounds/BogCreeper_OG_153_Play.mp3");
+    snd.volume=.7;
+    snd.play();
+  }
+  if (completed_lines.length == 3){
+    var snd = new Audio("sounds/Tetris2.m4a");
+    snd.volume=1.;
+    snd.play();
+  }
   //alert(freq);
 }
 
@@ -192,6 +208,10 @@ function tetris_dies(){
   add_to_matrix();
   full_line_detection();
   new_tetris();
+  var snd = new Audio("sounds/Tetris1.m4a");
+  snd.volume=.5;
+  snd.play();
+
 
 }
 
