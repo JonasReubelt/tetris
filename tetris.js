@@ -80,6 +80,7 @@ function init(){
     this.currentTime = 0;
     this.play();
   }, false);
+  myAudio.volume = 0.5;
   myAudio.play();
 }
 
@@ -188,13 +189,24 @@ function full_line_detection(){
   total_cleared += completed_lines.length;
   freq = Math.floor(total_cleared/10) + 1;
   if (completed_lines.length == 4){
-    var snd = new Audio("sounds/BogCreeper_OG_153_Play.mp3");
-    snd.volume=.7;
+    var snd = new Audio("sounds/TetrisforJeff2.m4a");
+    snd.volume=.6;
     snd.play();
   }
   if (completed_lines.length == 3){
     var snd = new Audio("sounds/Tetris2.m4a");
     snd.volume=1.;
+    snd.play();
+  }
+  if (completed_lines.length == 1){
+    var snd = new Audio("sounds/TetrisG.m4a");
+    snd.volume=.6;
+    snd.play();
+  }
+  if (completed_lines.length == 2){
+    var snd = new Audio("sounds/TetrisG.m4a");
+    snd.volume=.6;
+    snd.play();
     snd.play();
   }
   //alert(freq);
