@@ -59,6 +59,7 @@ function update(){
     }
   }
 
+
   draw_tetris();
   draw_next_tetris();
   //draw_grid();
@@ -241,7 +242,7 @@ function collision_detected(x, y, rot){
       return true;
     }
   }
-  if (matrix_collision(x, y)){
+  if (matrix_collision(x, y, positions_new)){
     return true;
   }
   return false;
@@ -310,7 +311,7 @@ function keyDown(evt){
       future_pos_y = tetris.y + 1;
       break;
     case 38:
-      rotate();
+
       rot = true;
       //alert(tetris.o);
       break;
@@ -323,6 +324,10 @@ function keyDown(evt){
   } else {
     tetris.y = future_pos_y;
     tetris.x = future_pos_x;
+    if (rot==true){
+      rotate();
+    }
+
   }
 }
 
@@ -359,8 +364,8 @@ function draw_matrix(){
   }
 }
 
-function matrix_collision(x, y){
-  var positions = tetris.pos;
+function matrix_collision(x, y, pos_new){
+  var positions = pos_new;
   for (var i=0; i<4; i++){
     var pos = positions[i];
     var ix = x + pos[0];
