@@ -435,7 +435,7 @@ function draw_matrix(){
   for (var i=0; i<blocks_y; i++){
     for (var j=0; j<blocks_x; j++){
       if (matrix[i][j] > 0){
-        ctx.fillStyle = shadeBlend(0.5, colors[matrix[i][j]]);
+        ctx.fillStyle = shadeBlend(0.62, colors[matrix[i][j]]);
         draw_block(j, i);
       }
     }
