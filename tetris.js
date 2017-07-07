@@ -19,6 +19,7 @@ var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 var freq = 1.;
+var level = 1;
 var increase = 2.;
 var tetris;
 var matrix;
@@ -127,7 +128,7 @@ function draw_points(){
   ctx.fillText("Cleared lines:",world.width + 100,200);
   ctx.fillText(total_cleared,world.width + 100,250);
   ctx.fillText("Level:",world.width + 100,300);
-  ctx.fillText(freq,world.width + 100,350);
+  ctx.fillText(level,world.width + 100,350);
 }
 
 function draw_grid(){
@@ -192,6 +193,7 @@ function full_line_detection(){
   matrix = new_matrix;
   add_points(completed_lines.length);
   total_cleared += completed_lines.length;
+  level = Math.floor(total_cleared/10) + 1;
   freq = Math.floor(total_cleared/10) + increase;
   if (completed_lines.length == 4){
     var snd = new Audio("sounds/TetrisforJeff2.m4a");
