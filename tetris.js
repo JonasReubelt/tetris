@@ -33,6 +33,7 @@ var total_cleared = 0;
 var fps = 60.;
 var fps_counter = 0;
 var dropping = false;
+var disco = false;
 
 window.onload = function() {
     init();
@@ -144,6 +145,10 @@ function draw_grid(){
 }
 
 function draw_block(x, y){
+  if(disco) {
+      var color = '#'+Math.floor(Math.random()*16777215).toString(16);
+      ctx.fillStyle = color;
+  }
   ctx.fillRect(x * block_size, y * block_size, block_size, block_size);
 }
 
@@ -350,6 +355,9 @@ function keyDown(evt){
       dropping = false;
       console.log("dropping ended");
       return;
+    case 68: // d
+      disco = !disco;
+      break;
 
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
