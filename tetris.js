@@ -18,6 +18,7 @@ var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 var freq = 1.;
+var increase = 2.;
 var tetris;
 var matrix;
 var points = 0;
@@ -192,7 +193,7 @@ function full_line_detection(){
   matrix = new_matrix;
   add_points(completed_lines.length);
   total_cleared += completed_lines.length;
-  freq = Math.floor(total_cleared/10) + 1;
+  freq = Math.floor(total_cleared/10) + increase;
   if (completed_lines.length == 4){
     var snd = new Audio("sounds/TetrisforJeff2.m4a");
     snd.volume=.6;
