@@ -64,6 +64,7 @@ function update(){
 
 
   draw_tetris();
+  draw_grid();
   draw_next_tetris();
   //draw_grid();
   draw_points();
@@ -128,25 +129,15 @@ function draw_points(){
 }
 
 function draw_grid(){
-  ctx.strokeStyle = '#4c4a4a';
-  ctx.lineWidth=2;
-  ctx.moveTo(0,0);
-  ctx.lineTo(world.width,0);
-  ctx.moveTo(1,0);
-  ctx.lineTo(1,world.height);
-  ctx.moveTo(0,world.height-1);
-  ctx.lineTo(world.width,world.height-1);
-  ctx.moveTo(world.width-1,0);
-  ctx.lineTo(world.width-1,world.height);
-  /*for (var i=0; i<blocks_x; i++){
-    ctx.moveTo(i * block_size,0);
-    ctx.lineTo(i * block_size,world.height);
+  var grid_width = 4;
+  ctx.fillStyle = "gray";
+  for (var i=0;i<blocks_x; i++){
+    ctx.fillRect(i * block_size, 0, grid_width, block_size * blocks_y);
   }
-  for (var i=0; i<blocks_y; i++){
-    ctx.moveTo(0, i * block_size);
-    ctx.lineTo(world.width, i * block_size);
-  }*/
-  ctx.stroke();
+  for (var i=0;i<blocks_y; i++){
+    ctx.fillRect(0, i*block_size, block_size * blocks_x, grid_width);
+  }
+
 }
 
 function draw_block(x, y){
