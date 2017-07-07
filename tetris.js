@@ -193,7 +193,7 @@ function full_line_detection(){
   matrix = new_matrix;
   add_points(completed_lines.length);
   total_cleared += completed_lines.length;
-  if(Math.floor(total_cleared/10) - level >= 1) {
+  if(Math.floor(total_cleared/10) - level >= 0) {
       level_up();
   }
       
@@ -225,7 +225,7 @@ function full_line_detection(){
 function level_up() {
     level += 1;
     var snd = new Audio("sounds/levelup.m4a");
-    snd.volume=.5;
+    snd.volume=.99;
     snd.play();
 }
 
