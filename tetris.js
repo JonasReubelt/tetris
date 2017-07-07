@@ -107,6 +107,16 @@ function draw_tetris(){
     var pos = positions[i];
     draw_block(tetris.x + pos[0], tetris.y + pos[1]);
   }
+  var future_pos_x = tetris.x;
+  var future_pos_y = tetris.y;
+  while(!collision_detected(future_pos_x, future_pos_y, 0)) {
+      future_pos_y += 1;
+  }
+  for (var i=0; i<4; i++){
+    var pos = positions[i];
+    ctx.fillStyle="#333333";
+    draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1]);
+  }
 }
 
 function draw_next_tetris(){
