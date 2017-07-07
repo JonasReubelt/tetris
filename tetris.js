@@ -20,7 +20,7 @@ var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 
 var freq = 1.;
 var level = 1;
-var increase = 2.;
+var increase = 1.;
 var tetris;
 var matrix;
 var points = 0;
