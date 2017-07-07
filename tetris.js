@@ -30,6 +30,8 @@ var next_tetris;
 var total_cleared = 0;
 var fps = 60.;
 var fps_counter = 0;
+var dropping = false;
+
 window.onload = function() {
     init();
     canvas = document.getElementById("canvas");
@@ -151,6 +153,10 @@ function draw_block(x, y){
 }
 
 function heartbeat(){
+  console.log(tetris.x, tetris.y);
+  if(dropping) {
+      return;
+  }
   var future_pos_y = tetris.y + 1;
   if (collision_detected(tetris.x, future_pos_y)){
     tetris_dies();
@@ -223,8 +229,6 @@ function tetris_dies(){
   var snd = new Audio("sounds/Tetris1.m4a");
   snd.volume=.5;
   snd.play();
-
-
 }
 
 function new_tetris(){
@@ -253,6 +257,7 @@ function new_tetris(){
   bag_counter += 1;
   var pos = tetrii[b];
   tetris = {"id": b, "x": 5, "y": -1, "pos": pos, "o": 0};
+  console.log("New tetris", tetris);
 }
 
 function collision_detected(x, y, rot){
@@ -347,6 +352,14 @@ function keyDown(evt){
       rot = true;
       //alert(tetris.o);
       break;
+    case 32:
+      console.log("dropping");
+      dropping = true;
+      drop_tetris();
+      tetris_dies();
+      dropping = false;
+      console.log("dropping ended");
+      break;
 
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
@@ -361,6 +374,15 @@ function keyDown(evt){
     }
 
   }
+}
+
+function drop_tetris() {
+    var future_pos_x = tetris.x;
+    var future_pos_y = tetris.y;
+    while(!collision_detected(future_pos_x, future_pos_y, 0)){
+        future_pos_y += 1;
+    }
+    tetris.y = future_pos_y - 1;
 }
 
 function zeros(dimensions) {
