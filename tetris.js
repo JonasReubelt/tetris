@@ -13,7 +13,7 @@ var tetrii = {"I": [[0, 0], [0, 1], [0, 2], [0, 3]],
               "L": [[0, 0], [-1, 0], [1, 0], [1, -1]],
               "O": [[0, 0], [0, 1], [1, 0], [1, 1]]};
 var tcolors = {"I": 1, "T": 2, "Z": 3, "S": 4, "J": 5, "L": 6, "O": 7};
-var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "green", 5: "#0d37e5",
+var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "#15aa10", 5: "#0d37e5",
               6: "#e9850e", 7: "#d5cf12"};
 var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
@@ -435,7 +435,7 @@ function draw_matrix(){
   for (var i=0; i<blocks_y; i++){
     for (var j=0; j<blocks_x; j++){
       if (matrix[i][j] > 0){
-        ctx.fillStyle = shadeBlend(-0.5, colors[matrix[i][j]]);
+        ctx.fillStyle = shadeBlend(0.5, colors[matrix[i][j]]);
         draw_block(j, i);
       }
     }
