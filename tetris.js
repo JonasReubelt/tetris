@@ -153,7 +153,6 @@ function draw_block(x, y){
 }
 
 function heartbeat(){
-  console.log(tetris.x, tetris.y);
   if(dropping) {
       return;
   }
@@ -355,7 +354,7 @@ function keyDown(evt){
       tetris_dies();
       dropping = false;
       console.log("dropping ended");
-      break;
+      return;
 
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
@@ -377,8 +376,11 @@ function drop_tetris() {
     var future_pos_y = tetris.y;
     while(!collision_detected(future_pos_x, future_pos_y, 0)){
         future_pos_y += 1;
+        console.log(future_pos_y);
     }
     tetris.y = future_pos_y - 1;
+    console.log("after collision checking in drop");
+    console.log(tetris.y);
 }
 
 function zeros(dimensions) {
