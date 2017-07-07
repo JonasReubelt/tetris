@@ -99,6 +99,7 @@ function draw_canvas(){
   ctx.fillStyle = 'white';
   ctx.fillRect(canvas.width/2, 0, canvas.width + grid_width, canvas.height + grid_width);
 }
+
 function draw_tetris(){
   var positions = tetris.pos;
   var future_pos_x = tetris.x;
@@ -434,7 +435,7 @@ function draw_matrix(){
   for (var i=0; i<blocks_y; i++){
     for (var j=0; j<blocks_x; j++){
       if (matrix[i][j] > 0){
-        ctx.fillStyle = shadeBlend(0.5, colors[matrix[i][j]]);
+        ctx.fillStyle = shadeBlend(-0.5, colors[matrix[i][j]]);
         draw_block(j, i);
       }
     }
