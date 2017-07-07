@@ -100,13 +100,6 @@ function draw_canvas(){
   ctx.fillRect(canvas.width/2, 0, canvas.width + grid_width, canvas.height + grid_width);
 }
 function draw_tetris(){
-  var c = tetris_color();
-  ctx.fillStyle = c;
-  var positions = tetris.pos;
-  for (var i=0; i<4; i++){
-    var pos = positions[i];
-    draw_block(tetris.x + pos[0], tetris.y + pos[1]);
-  }
   var future_pos_x = tetris.x;
   var future_pos_y = tetris.y;
   while(!collision_detected(future_pos_x, future_pos_y, 0)) {
@@ -116,6 +109,13 @@ function draw_tetris(){
     var pos = positions[i];
     ctx.fillStyle="#333333";
     draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1]);
+  }
+  var c = tetris_color();
+  ctx.fillStyle = c;
+  var positions = tetris.pos;
+  for (var i=0; i<4; i++){
+    var pos = positions[i];
+    draw_block(tetris.x + pos[0], tetris.y + pos[1]);
   }
 }
 
