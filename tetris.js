@@ -3,7 +3,8 @@ var ctx;
 var block_size = 30;
 var blocks_x = 10;
 var blocks_y = 20;
-var world = {"width": blocks_x * block_size, "height": blocks_y * block_size};
+var grid_width = 4;
+var world = {"width": blocks_x * block_size + grid_width, "height": blocks_y * block_size + grid_width};
 var tetrii = {"I": [[0, 0], [0, 1], [0, 2], [0, 3]],
               "T": [[0, 0], [-1, 0], [1, 0], [0, -1]],
               "Z": [[0, 0], [-1, -1], [0, -1], [1, 0]],
@@ -36,7 +37,7 @@ var dropping = false;
 window.onload = function() {
     init();
     canvas = document.getElementById("canvas");
-    canvas.width = world.width*2;
+    canvas.width = world.width*2 ;
     canvas.height = world.height;
     ctx = canvas.getContext("2d");
 
@@ -92,9 +93,9 @@ function draw_canvas(){
   ctx.lineWidth = '5';
   ctx.fillStyle = 'black';
   ctx.strokeStyle = 'white';
-  ctx.fillRect(0, 0, canvas.width/2, canvas.height);
+  ctx.fillRect(0, 0, canvas.width/2 + grid_width, canvas.height + grid_width);
   ctx.fillStyle = 'white';
-  ctx.fillRect(canvas.width/2, 0, canvas.width, canvas.height);
+  ctx.fillRect(canvas.width/2, 0, canvas.width + grid_width, canvas.height + grid_width);
 }
 function draw_tetris(){
   var c = tetris_color();
@@ -129,14 +130,16 @@ function draw_points(){
 }
 
 function draw_grid(){
-  var grid_width = 4;
   ctx.fillStyle = "gray";
-  for (var i=0;i<blocks_x; i++){
-    ctx.fillRect(i * block_size, 0, grid_width, block_size * blocks_y);
+  for (var i=0;i<blocks_x+1; i++){
+    ctx.fillRect(i * block_size, 0, grid_width, block_size * blocks_y + grid_width);
   }
-  for (var i=0;i<blocks_y; i++){
-    ctx.fillRect(0, i*block_size, block_size * blocks_x, grid_width);
+  for (var i=0;i<blocks_y+1; i++){
+    ctx.fillRect(0, i*block_size, block_size * blocks_x + grid_width, grid_width);
   }
+  ctx.fillRect(world.width, 0, world.width*2, grid_width);
+  ctx.fillRect(world.width*2 - grid_width, 0, grid_width, world.height);
+  ctx.fillRect(world.width, world.height - grid_width, world.width*2, grid_width);
 
 }
 
