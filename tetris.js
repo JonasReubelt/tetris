@@ -295,21 +295,17 @@ function rotated(pos){
   if (tetris.id=="I"){
     if (pos[0][0] == 0 && pos[0][1] == 0){
       new_pos = [[-1, 1], [0, 1], [1, 1], [2, 1]];
-      return new_pos;
     }
     else if (pos[0][0] == -1 && pos[0][1] == 1){
       new_pos = [[1, 0], [1, 1], [1, 2], [1, 3]];
-      return new_pos;
     }
     else if (pos[0][0] == 1 && pos[0][1] ==  0){
       new_pos = [[-1, 2], [0, 2], [1, 2], [2, 2]];
-      return new_pos;
     }
     else if (pos[0][0] == -1 && pos[0][1] == 2){
       new_pos = [[0, 0], [0, 1], [0, 2], [0, 3]];
-      return new_pos;
     }
-
+    return new_pos;
   }
   var pos_new = zeros([4, 2]);
   for (var i=1; i<4; i++){
