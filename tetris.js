@@ -3,7 +3,7 @@ var ctx;
 var block_size = 30;
 var blocks_x = 10;
 var blocks_y = 20;
-var grid_width = 4;
+var grid_width = 2;
 var world = {"width": blocks_x * block_size + grid_width, "height": blocks_y * block_size + grid_width};
 var tetrii = {"I": [[0, 0], [0, 1], [0, 2], [0, 3]],
               "T": [[0, 0], [-1, 0], [1, 0], [0, -1]],
