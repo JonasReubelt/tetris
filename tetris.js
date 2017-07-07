@@ -193,7 +193,10 @@ function full_line_detection(){
   matrix = new_matrix;
   add_points(completed_lines.length);
   total_cleared += completed_lines.length;
-  level = Math.floor(total_cleared/10) + 1;
+  if(Math.floor(total_cleared/10) - level >= 1) {
+      level_up();
+  }
+      
   freq = Math.floor(total_cleared/10) + increase;
   if (completed_lines.length == 4){
     var snd = new Audio("sounds/TetrisforJeff2.m4a");
@@ -217,6 +220,13 @@ function full_line_detection(){
     snd.play();
   }
   //alert(freq);
+}
+
+function level_up() {
+    level += 1;
+    var snd = new Audio("sounds/levelup.m4a");
+    snd.volume=.5;
+    snd.play();
 }
 
 function add_points(n_lines){
