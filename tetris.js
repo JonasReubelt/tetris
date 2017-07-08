@@ -258,6 +258,10 @@ function add_points(n_lines){
 }
 
 function tetris_dies(){
+  if(tetris.y == -1) {
+      game_over();
+      return;
+  }
   add_to_matrix();
   full_line_detection();
   new_tetris();
@@ -481,6 +485,12 @@ function shuffle(a) {
     a[j] = x;
   }
   return a;
+}
+
+function game_over() {
+    alert("game over");
+    disco = true;
+    freq = 0;
 }
 
 function shadeBlend(p,c0,c1) {
