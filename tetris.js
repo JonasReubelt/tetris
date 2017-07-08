@@ -126,7 +126,7 @@ function draw_tetris(){
 
 function draw_stats(){
   draw_pos = [0, 1, 2, 3, 4, 5, 6];
-  x_offset = 10.5;
+  x_offset = 10.8;
   for (var t=0;t<7;t++){
     var id = tetris_set[t];
     var c = colors[tcolors[id]];
@@ -134,7 +134,7 @@ function draw_stats(){
     var positions = tetrii[id];
     for (var i=0; i<4; i++){
       var pos = positions[i];
-      ctx.fillRect((draw_pos[t] + x_offset + pos[0]/2 + t/3) * block_size, (18 + pos[1]/2) * block_size, block_size/2, block_size/2);
+      ctx.fillRect((draw_pos[t] + x_offset + pos[0]/3 + t/3) * block_size, (18 + pos[1]/3) * block_size, block_size/3, block_size/3);
 
     }
     ctx.font = "20px Arial";
