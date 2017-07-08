@@ -25,7 +25,7 @@ var tetris;
 var matrix;
 var points = 0;
 var bag_counter = 0;
-var n_set_in_bag = 5;
+var n_set_in_bag = 3;
 var current_bag = [];
 var next_bag = [];
 var tetris_set = ["I", "T", "Z", "S", "J", "L", "O"];
@@ -36,6 +36,8 @@ var fps_counter = 0;
 var dropping = false;
 var disco = false;
 var show_stats = false;
+var drought = 0;
+var min_show_drought = 10;
 
 window.onload = function() {
     init();
@@ -49,6 +51,7 @@ window.onload = function() {
 }
 
 function update(){
+
   draw_canvas();
   draw_matrix();
   draw_tetris();
@@ -57,6 +60,9 @@ function update(){
   draw_points();
   if(show_stats){
     draw_stats();
+  }
+  if (drought >= min_show_drought){
+    draw_drought();
   }
   if (fps_counter>=fps){
     heartbeat();
@@ -120,7 +126,7 @@ function draw_tetris(){
 
 function draw_stats(){
   draw_pos = [0, 1, 2, 3, 4, 5, 6];
-  x_offset = 10.5;
+  x_offset = 10.8;
   for (var t=0;t<7;t++){
     var id = tetris_set[t];
     var c = colors[tcolors[id]];
@@ -128,7 +134,7 @@ function draw_stats(){
     var positions = tetrii[id];
     for (var i=0; i<4; i++){
       var pos = positions[i];
-      ctx.fillRect((draw_pos[t] + x_offset + pos[0]/2 + t/3) * block_size, (18 + pos[1]/2) * block_size, block_size/2, block_size/2);
+      ctx.fillRect((draw_pos[t] + x_offset + pos[0]/3 + t/3) * block_size, (18 + pos[1]/3) * block_size, block_size/3, block_size/3);
 
     }
     ctx.font = "20px Arial";
@@ -137,6 +143,13 @@ function draw_stats(){
   }
   ctx.fillStyle = "gray";
   ctx.fillRect(world.width, world.height - grid_width - 100, world.width*2, grid_width);
+}
+
+function draw_drought(){
+  ctx.font = "20px Arial";
+  ctx.fillStyle = 'black';
+  ctx.fillText("Long bar drought:",world.width + 50 ,480);
+  ctx.fillText(drought ,world.width + 230 ,480);
 }
 
 function draw_next_tetris(){
@@ -151,14 +164,15 @@ function draw_next_tetris(){
 
 function draw_points(){
   var p = points.toString();
+  var x_offset = 70;
   ctx.font = "20px Arial";
   ctx.fillStyle = 'black';
-  ctx.fillText("Points:",world.width + 100,50);
-  ctx.fillText(p,world.width + 100,100);
-  ctx.fillText("Cleared lines:",world.width + 100,150);
-  ctx.fillText(total_cleared,world.width + 100,200);
-  ctx.fillText("Level:",world.width + 100,250);
-  ctx.fillText(level,world.width + 100,300);
+  ctx.fillText("Points:",world.width + x_offset,50);
+  ctx.fillText(p,world.width + x_offset,100);
+  ctx.fillText("Cleared lines:",world.width + x_offset,150);
+  ctx.fillText(total_cleared,world.width + x_offset,200);
+  ctx.fillText("Level:",world.width + x_offset,250);
+  ctx.fillText(level,world.width + x_offset,300);
 }
 
 function draw_grid(){
@@ -293,6 +307,12 @@ function new_tetris(){
   b = current_bag[bag_counter];
   bag_counter += 1;
   var pos = tetrii[b];
+  if (b != "I"){
+    drought += 1;
+  }
+  if (b == "I"){
+    drought =0;
+  }
   tetris = {"id": b, "x": 5, "y": -1, "pos": pos, "o": 0};
   N_parts[tcolors[b]-1] += 1;
   console.log("New tetris", tetris);
