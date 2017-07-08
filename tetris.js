@@ -5,19 +5,19 @@ var blocks_x = 10;
 var blocks_y = 20;
 var grid_width = 2;
 var world = {"width": blocks_x * block_size + grid_width, "height": blocks_y * block_size + grid_width};
-var tetrii = {"I": [[0, 0], [0, 1], [0, 2], [0, 3]],
+var tetrii = {"I": [[0, -2], [0, -1], [0, 0], [0, 1]],
               "T": [[0, 0], [-1, 0], [1, 0], [0, -1]],
               "Z": [[0, 0], [-1, -1], [0, -1], [1, 0]],
               "S": [[0, 0], [-1, 0], [0, -1], [1, -1]],
               "J": [[0, 0], [-1, -1], [-1, 0], [1, 0]],
               "L": [[0, 0], [-1, 0], [1, 0], [1, -1]],
-              "O": [[0, 0], [0, 1], [1, 0], [1, 1]]};
+              "O": [[0, -1], [0, 0], [1, -1], [1, 0]]};
 var tcolors = {"I": 1, "T": 2, "Z": 3, "S": 4, "J": 5, "L": 6, "O": 7};
 var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "#15aa10", 5: "#0d37e5",
               6: "#e9850e", 7: "#d5cf12"};
 var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-
+var N_parts = [0, 0, 0, 0, 0, 0, 0];
 var freq = 1.;
 var level = 1;
 var increase = 1.;
@@ -25,16 +25,17 @@ var tetris;
 var matrix;
 var points = 0;
 var bag_counter = 0;
-var current_bag = ["I", "T", "Z", "S", "J", "L", "O"];
-var next_bag = ["I", "T", "Z", "S", "J", "L", "O"];
-current_bag = shuffle(current_bag);
-next_bag = shuffle(next_bag);
+var n_set_in_bag = 5;
+var current_bag = [];
+var next_bag = [];
+var tetris_set = ["I", "T", "Z", "S", "J", "L", "O"];
 var next_tetris;
 var total_cleared = 0;
 var fps = 60.;
 var fps_counter = 0;
 var dropping = false;
 var disco = false;
+var show_stats = false;
 
 window.onload = function() {
     init();
@@ -42,44 +43,30 @@ window.onload = function() {
     canvas.width = world.width*2 ;
     canvas.height = world.height;
     ctx = canvas.getContext("2d");
-
-
     setInterval(update, 1000./fps);
     //setInterval(heartbeat, 1000./freq);
-
     document.addEventListener("keydown", keyDown);
-
 }
 
 function update(){
-
   draw_canvas();
-
   draw_matrix();
-
-  var positions = tetris.pos;
-  for (var i=0; i<4; i++){
-    var pos = positions[i];
-    if (tetris.y + pos[1] + 1 > blocks_y){
-      tetris.y -= 1;
-    }
-  }
-
-
   draw_tetris();
   draw_grid();
   draw_next_tetris();
-  //draw_grid();
   draw_points();
+  if(show_stats){
+    draw_stats();
+  }
   if (fps_counter>=fps){
     heartbeat();
     fps_counter = 0;
   }
-  //alert(fps_counter);
   fps_counter += freq;
 }
 
 function init(){
+  create_bags();
   new_tetris();
   matrix = zeros([blocks_y, blocks_x]);
   myAudio = new Audio('sounds/Tetristitle.m4a');
@@ -89,6 +76,17 @@ function init(){
   }, false);
   myAudio.volume = 0.5;
   myAudio.play();
+
+}
+
+function create_bags(){
+  for(var i=0; i<n_set_in_bag;i++){
+    current_bag.push.apply(current_bag, tetris_set);
+    next_bag.push.apply(next_bag, tetris_set);
+  }
+  current_bag = shuffle(current_bag);
+  next_bag = shuffle(next_bag);
+
 }
 
 function draw_canvas(){
@@ -110,14 +108,35 @@ function draw_tetris(){
   for (var i=0; i<4; i++){
     var pos = positions[i];
     ctx.fillStyle="#333333";
-    draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1]);
+    draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1], block_size);
   }
   var c = tetris_color();
   ctx.fillStyle = c;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(tetris.x + pos[0], tetris.y + pos[1]);
+    draw_block(tetris.x + pos[0], tetris.y + pos[1], block_size);
   }
+}
+
+function draw_stats(){
+  draw_pos = [0, 1, 2, 3, 4, 5, 6];
+  x_offset = 10.5;
+  for (var t=0;t<7;t++){
+    var id = tetris_set[t];
+    var c = colors[tcolors[id]];
+    ctx.fillStyle = c;
+    var positions = tetrii[id];
+    for (var i=0; i<4; i++){
+      var pos = positions[i];
+      ctx.fillRect((draw_pos[t] + x_offset + pos[0]/2 + t/3) * block_size, (18 + pos[1]/2) * block_size, block_size/2, block_size/2);
+
+    }
+    ctx.font = "20px Arial";
+    ctx.fillStyle = 'black';
+    ctx.fillText(N_parts[t],(draw_pos[t] + x_offset + t/3)* block_size,(19.7 ) * block_size);
+  }
+  ctx.fillStyle = "gray";
+  ctx.fillRect(world.width, world.height - grid_width - 100, world.width*2, grid_width);
 }
 
 function draw_next_tetris(){
@@ -126,7 +145,7 @@ function draw_next_tetris(){
   var positions = next_tetris.pos;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(14 + pos[0], 15 + pos[1]);
+    draw_block(14 + pos[0], 13 + pos[1], block_size);
   }
 }
 
@@ -136,10 +155,10 @@ function draw_points(){
   ctx.fillStyle = 'black';
   ctx.fillText("Points:",world.width + 100,50);
   ctx.fillText(p,world.width + 100,100);
-  ctx.fillText("Cleared lines:",world.width + 100,200);
-  ctx.fillText(total_cleared,world.width + 100,250);
-  ctx.fillText("Level:",world.width + 100,300);
-  ctx.fillText(level,world.width + 100,350);
+  ctx.fillText("Cleared lines:",world.width + 100,150);
+  ctx.fillText(total_cleared,world.width + 100,200);
+  ctx.fillText("Level:",world.width + 100,250);
+  ctx.fillText(level,world.width + 100,300);
 }
 
 function draw_grid(){
@@ -153,15 +172,14 @@ function draw_grid(){
   ctx.fillRect(world.width, 0, world.width*2, grid_width);
   ctx.fillRect(world.width*2 - grid_width, 0, grid_width, world.height);
   ctx.fillRect(world.width, world.height - grid_width, world.width*2, grid_width);
-
 }
 
-function draw_block(x, y){
+function draw_block(x, y, bs){
   if(disco) {
       var color = '#'+Math.floor(Math.random()*16777215).toString(16);
       ctx.fillStyle = color;
   }
-  ctx.fillRect(x * block_size, y * block_size, block_size, block_size);
+  ctx.fillRect(x * bs, y * bs, bs, bs);
 }
 
 function heartbeat(){
@@ -207,37 +225,32 @@ function full_line_detection(){
   if(Math.floor(total_cleared/10) - level >= 0) {
       level_up();
   }
-      
+
   freq = Math.floor(total_cleared/10) + increase;
   if (completed_lines.length == 4){
-    var snd = new Audio("sounds/TetrisforJeff2.m4a");
-    snd.volume=.6;
-    snd.play();
+    play_sound("sounds/TetrisforJeff2.m4a", .6);
   }
   if (completed_lines.length == 3){
-    var snd = new Audio("sounds/Tetris2.m4a");
-    snd.volume=1.;
-    snd.play();
+    play_sound("sounds/Tetris2.m4a", 1.);
   }
   if (completed_lines.length == 1){
-    var snd = new Audio("sounds/TetrisG.m4a");
-    snd.volume=.6;
-    snd.play();
+    play_sound("sounds/TetrisG.m4a", .6);
   }
   if (completed_lines.length == 2){
-    var snd = new Audio("sounds/TetrisG.m4a");
-    snd.volume=.6;
-    snd.play();
-    snd.play();
+    play_sound("sounds/TetrisG.m4a", .6);
   }
   //alert(freq);
 }
 
+function play_sound(filename, volume){
+  var snd = new Audio(filename);
+  snd.volume=volume;
+  snd.play();
+}
+
 function level_up() {
     level += 1;
-    var snd = new Audio("sounds/levelup.m4a");
-    snd.volume=.99;
-    snd.play();
+    play_sound("sounds/levelup.m4a", .8);
 }
 
 function add_points(n_lines){
@@ -248,24 +261,22 @@ function tetris_dies(){
   add_to_matrix();
   full_line_detection();
   new_tetris();
-  var snd = new Audio("sounds/Tetris1.m4a");
-  snd.volume=.5;
-  snd.play();
+  play_sound("sounds/Tetris1.m4a", .5);
 }
 
 function new_tetris(){
   if (bag_counter == 5){
     next_bag = shuffle(next_bag);
   }
-  if (bag_counter == 7){
+  if (bag_counter == n_set_in_bag * 7){
     //alert("switch to next bag");
-    for (var i=0; i<7;i++){
+    for (var i=0; i<n_set_in_bag * 7;i++){
       current_bag[i] = next_bag[i];
     }
 
     bag_counter = 0;
   }
-  if (bag_counter < 6){
+  if (bag_counter < n_set_in_bag * 7 - 1){
     nb = current_bag[bag_counter+1];
     var npos = tetrii[nb];
     next_tetris = {"id": nb, "x": 5, "y": -1, "pos": npos, "o": 0};
@@ -279,6 +290,7 @@ function new_tetris(){
   bag_counter += 1;
   var pos = tetrii[b];
   tetris = {"id": b, "x": 5, "y": -1, "pos": pos, "o": 0};
+  N_parts[tcolors[b]-1] += 1;
   console.log("New tetris", tetris);
 }
 
@@ -315,17 +327,17 @@ function rotated(pos){
     return pos;
   }
   if (tetris.id=="I"){
-    if (pos[0][0] == 0 && pos[0][1] == 0){
-      new_pos = [[-1, 1], [0, 1], [1, 1], [2, 1]];
+    if (pos[0][0] == 0 && pos[0][1] == -2){
+      new_pos = [[-1, -1], [0, -1], [1, -1], [2, -1]];
     }
-    else if (pos[0][0] == -1 && pos[0][1] == 1){
-      new_pos = [[1, 0], [1, 1], [1, 2], [1, 3]];
+    else if (pos[0][0] == -1 && pos[0][1] == -1){
+      new_pos = [[1, -2], [1, -1], [1, 0], [1, 1]];
     }
-    else if (pos[0][0] == 1 && pos[0][1] ==  0){
-      new_pos = [[-1, 2], [0, 2], [1, 2], [2, 2]];
+    else if (pos[0][0] == 1 && pos[0][1] ==  -2){
+      new_pos = [[-1, 0], [0, 0], [1, 0], [2, 0]];
     }
-    else if (pos[0][0] == -1 && pos[0][1] == 2){
-      new_pos = [[0, 0], [0, 1], [0, 2], [0, 3]];
+    else if (pos[0][0] == -1 && pos[0][1] == 0){
+      new_pos = [[0, -2], [0, -1], [0, 0], [0, 1]];
     }
     return new_pos;
   }
@@ -380,6 +392,9 @@ function keyDown(evt){
       return;
     case 68: // d
       disco = !disco;
+      break;
+    case 83: // d
+      show_stats = !show_stats;
       break;
 
   }
@@ -436,7 +451,7 @@ function draw_matrix(){
     for (var j=0; j<blocks_x; j++){
       if (matrix[i][j] > 0){
         ctx.fillStyle = shadeBlend(0.62, colors[matrix[i][j]]);
-        draw_block(j, i);
+        draw_block(j, i, block_size);
       }
     }
   }
