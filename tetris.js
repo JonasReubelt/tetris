@@ -38,6 +38,7 @@ var disco = false;
 var show_stats = false;
 var drought = 0;
 var min_show_drought = 10;
+var pause = false;
 
 window.onload = function() {
     init();
@@ -197,7 +198,7 @@ function draw_block(x, y, bs){
 }
 
 function heartbeat(){
-  if(dropping) {
+  if(dropping || pause) {
       return;
   }
   var future_pos_y = tetris.y + 1;
@@ -388,6 +389,9 @@ function rotate(){
 }
 
 function keyDown(evt){
+  if(pause && evt.keyCode != 80) {
+      return;
+  }
   var future_pos_x = tetris.x;
   var future_pos_y = tetris.y;
   var rot = false;
@@ -417,7 +421,10 @@ function keyDown(evt){
     case 68: // d
       disco = !disco;
       break;
-    case 83: // d
+    case 80:
+      pause = !pause;
+      return;
+    case 83: // s
       show_stats = !show_stats;
       break;
 
