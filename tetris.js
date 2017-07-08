@@ -272,7 +272,7 @@ function add_points(n_lines){
 }
 
 function tetris_dies(){
-  if(tetris.y == -1) {
+  if(tetris.y <= 0) {
       game_over();
       return;
   }
