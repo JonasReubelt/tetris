@@ -16,6 +16,7 @@ var tcolors = {"I": 1, "T": 2, "Z": 3, "S": 4, "J": 5, "L": 6, "O": 7};
 var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "#15aa10", 5: "#0d37e5",
               6: "#e9850e", 7: "#d5cf12"};
 var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+var drop_color = "#333333"
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 var N_parts = [0, 0, 0, 0, 0, 0, 0];
 var freq = 1.;
@@ -114,14 +115,12 @@ function draw_tetris(){
   }
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    ctx.fillStyle="#333333";
-    draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1], block_size);
+    draw_block(future_pos_x + pos[0], future_pos_y - 1 + pos[1], block_size, drop_color);
   }
   var c = tetris_color();
-  ctx.fillStyle = c;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(tetris.x + pos[0], tetris.y + pos[1], block_size);
+    draw_block(tetris.x + pos[0], tetris.y + pos[1], block_size, c);
   }
 }
 
@@ -155,11 +154,10 @@ function draw_drought(){
 
 function draw_next_tetris(){
   var c = colors[tcolors[next_tetris.id]];
-  ctx.fillStyle = c;
   var positions = next_tetris.pos;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(14 + pos[0], 13 + pos[1], block_size);
+    draw_block(14 + pos[0], 13 + pos[1], block_size, c);
   }
 }
 
@@ -189,11 +187,14 @@ function draw_grid(){
   ctx.fillRect(world.width, world.height - grid_width, world.width*2, grid_width);
 }
 
-function draw_block(x, y, bs){
+function draw_block(x, y, bs, color){
   if(disco) {
-      var color = '#'+Math.floor(Math.random()*16777215).toString(16);
-      ctx.fillStyle = color;
+      color = '#'+Math.floor(Math.random()*16777215).toString(16);
   }
+  if(pause) {
+     color = shadeBlend(-0.5, color);
+  }
+  ctx.fillStyle = color;
   ctx.fillRect(x * bs, y * bs, bs, bs);
 }
 
@@ -422,7 +423,7 @@ function keyDown(evt){
       disco = !disco;
       break;
     case 80:
-      pause = !pause;
+      toggle_pause();
       return;
     case 83: // s
       show_stats = !show_stats;
@@ -481,8 +482,8 @@ function draw_matrix(){
   for (var i=0; i<blocks_y; i++){
     for (var j=0; j<blocks_x; j++){
       if (matrix[i][j] > 0){
-        ctx.fillStyle = shadeBlend(0.62, colors[matrix[i][j]]);
-        draw_block(j, i, block_size);
+        var c = shadeBlend(0.62, colors[matrix[i][j]]);
+        draw_block(j, i, block_size, c);
       }
     }
   }
@@ -512,6 +513,10 @@ function shuffle(a) {
     a[j] = x;
   }
   return a;
+}
+
+function toggle_pause() {
+    pause = !pause;
 }
 
 function game_over() {
