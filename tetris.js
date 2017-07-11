@@ -454,7 +454,7 @@ function keyDown(evt){
 }
 
 function drop_tetris() {
-    play_sound("sounds/Tetrisdrop.m4a", .8);
+    play_sound("sounds/Tetrisdrop.m4a", .55);
     var future_pos_x = tetris.x;
     var future_pos_y = tetris.y;
     while(!collision_detected(future_pos_x, future_pos_y, 0)){
