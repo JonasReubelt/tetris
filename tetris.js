@@ -42,6 +42,9 @@ var show_stats = false;
 var drought = 0;
 var min_show_drought = 10;
 var pause = false;
+var game_over_theme;
+var tetris_theme;
+game_is_over = false;
 
 window.onload = function() {
     init();
@@ -68,6 +71,11 @@ function update(){
   if (drought >= min_show_drought){
     draw_drought();
   }
+  if(game_is_over) {
+    ctx.font = "40px Courier";
+    ctx.fillStyle = 'pink';
+    ctx.fillText("GAME OVER", world.width/2 - 110, world.height/2 - 3);
+  }
   if (fps_counter>=fps){
     heartbeat();
     fps_counter = 0;
@@ -79,13 +87,13 @@ function init(){
   create_bags();
   new_tetris();
   matrix = zeros([blocks_y, blocks_x]);
-  myAudio = new Audio('sounds/Tetristitle.m4a');
-  myAudio.addEventListener('ended', function() {
+  tetris_theme = new Audio('sounds/Tetristitle.m4a');
+  tetris_theme.addEventListener('ended', function() {
     this.currentTime = 0;
     this.play();
   }, false);
-  myAudio.volume = 0.5;
-  myAudio.play();
+  tetris_theme.volume = 0.5;
+  tetris_theme.play();
 
 }
 
@@ -441,6 +449,43 @@ function keyDown(evt){
 
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
+    if(rot) {
+        left = tetris.x - 1;
+        more_left = tetris.x - 2;
+        right = tetris.x + 1;
+        more_right = tetris.x + 2;
+        if(!collision_detected(left, future_pos_y, rot)) {
+            tetris.y = future_pos_y;
+            tetris.x = left;
+            rotate();
+            play_sound("sounds/Shift.m4a", 0.3);
+            return;
+        }
+        if(!collision_detected(right, future_pos_y, rot)) {
+            tetris.y = future_pos_y;
+            tetris.x = right;
+            rotate();
+            play_sound("sounds/Shift.m4a", 0.3);
+            return;
+        }
+        if(tetris.id == "I") {
+            if(!collision_detected(more_left, future_pos_y, rot)) {
+                tetris.y = future_pos_y;
+                tetris.x = more_left;
+                rotate();
+                play_sound("sounds/Shift.m4a", 0.3);
+                return;
+            }
+            if(!collision_detected(more_right, future_pos_y, rot)) {
+                tetris.y = future_pos_y;
+                tetris.x = more_right;
+                rotate();
+                play_sound("sounds/Shift.m4a", 0.3);
+                return;
+            }
+        }
+    }
+
     if (evt.keyCode == 40){
       tetris_dies();
     }
@@ -531,7 +576,17 @@ function toggle_pause() {
 }
 
 function game_over() {
-    alert("game over");
+    tetris_theme.pause();
+    game_over_theme = new Audio('sounds/gameover.m4a');
+    game_over_theme.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    game_over_theme.volume = 1.0;
+    game_over_theme.play();
+
+    game_is_over = true;
+
     disco = true;
     freq = 0;
 }
