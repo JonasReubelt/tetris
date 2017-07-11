@@ -22,6 +22,8 @@ var N_parts = [0, 0, 0, 0, 0, 0, 0];
 var freq = 1.;
 var level = 1;
 var increase = 1.;
+var mercy_delay = 500;
+var mercy = false;
 var tetris;
 var matrix;
 var points = 0;
@@ -204,7 +206,13 @@ function heartbeat(){
   }
   var future_pos_y = tetris.y + 1;
   if (collision_detected(tetris.x, future_pos_y)){
-    tetris_dies();
+
+    mercy = true;
+    setTimeout(function() {
+        tetris_dies();
+        mercy = false;
+    }, mercy_delay);
+
   } else {
     tetris.y = future_pos_y;
   }
@@ -274,7 +282,7 @@ function add_points(n_lines){
 }
 
 function tetris_dies(){
-  if(tetris.y <= 0) {
+  if(tetris.y <= 0 && !mercy) {
       game_over();
       return;
   }
