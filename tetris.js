@@ -22,7 +22,7 @@ var N_parts = [0, 0, 0, 0, 0, 0, 0];
 var freq = 1.;
 var level = 1;
 var increase = 1.;
-var mercy_delay = 500;
+var mercy_delay = 1000;
 var mercy = false;
 var tetris;
 var matrix;
@@ -207,11 +207,11 @@ function heartbeat(){
   var future_pos_y = tetris.y + 1;
   if (collision_detected(tetris.x, future_pos_y)){
 
-    mercy = true;
-    setTimeout(function() {
-        tetris_dies();
-        mercy = false;
-    }, mercy_delay);
+    // mercy = true;
+    // setTimeout(function() {
+    //     tetris_dies();
+    //     mercy = false;
+    // }, mercy_delay);
 
   } else {
     tetris.y = future_pos_y;
@@ -282,7 +282,8 @@ function add_points(n_lines){
 }
 
 function tetris_dies(){
-  if(tetris.y <= 0 && !mercy) {
+  if(tetris.y <= 0) {
+  // if(tetris.y <= 0 && !mercy) {
       game_over();
       return;
   }
@@ -453,6 +454,7 @@ function keyDown(evt){
 }
 
 function drop_tetris() {
+    play_sound("sounds/Tetrisdrop.m4a", .8);
     var future_pos_x = tetris.x;
     var future_pos_y = tetris.y;
     while(!collision_detected(future_pos_x, future_pos_y, 0)){
