@@ -206,6 +206,7 @@ function heartbeat(){
   }
   var future_pos_y = tetris.y + 1;
   if (collision_detected(tetris.x, future_pos_y)){
+    tetris_dies();
 
     // mercy = true;
     // setTimeout(function() {
