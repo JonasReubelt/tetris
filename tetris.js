@@ -270,7 +270,7 @@ function full_line_detection(){
     play_sound("sounds/TetrisG.m4a", .6);
   }
   if (completed_lines.length == 2){
-    play_sound("sounds/TetrisG.m4a", .6);
+    play_sound("sounds/Tetrisggwp.m4a", .6);
   }
   //alert(freq);
 }
