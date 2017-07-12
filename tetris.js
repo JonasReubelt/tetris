@@ -270,7 +270,7 @@ function full_line_detection(){
     play_sound("sounds/TetrisG.m4a", .6);
   }
   if (completed_lines.length == 2){
-    play_sound("sounds/Tetrisggwp.m4a", .6);
+    play_sound("sounds/Tetrisggwp.m4a", .8);
   }
   //alert(freq);
 }
@@ -500,7 +500,7 @@ function keyDown(evt){
 }
 
 function drop_tetris() {
-    play_sound("sounds/Tetrisdrop.m4a", .45);
+    play_sound("sounds/Tetrisdrop.m4a", .35);
     var future_pos_x = tetris.x;
     var future_pos_y = tetris.y;
     while(!collision_detected(future_pos_x, future_pos_y, 0)){
