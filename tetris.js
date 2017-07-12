@@ -481,6 +481,10 @@ function keyDown(evt){
       load_scenario(1);
       return
 
+    case 50: // 2
+      load_scenario(2);
+      return
+
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
     if(rot) {
