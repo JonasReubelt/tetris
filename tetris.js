@@ -46,6 +46,21 @@ var game_over_theme;
 var tetris_theme;
 game_is_over = false;
 
+function reset() {
+    level = 1;
+    freq = 1;
+    total_cleared = 0; 
+    drought = 0;
+    current_bag = [];
+    next_bag = [];
+    disco = false;
+    pause = false;
+    points = 0;
+    game_is_over = false;
+    game_over_theme.pause();
+    tetris_theme.play();
+}
+
 window.onload = function() {
     init();
     canvas = document.getElementById("canvas");
@@ -55,6 +70,24 @@ window.onload = function() {
     setInterval(update, 1000./fps);
     //setInterval(heartbeat, 1000./freq);
     document.addEventListener("keydown", keyDown);
+    setup_music();
+    tetris_theme.play();
+}
+
+function setup_music() {
+    tetris_theme = new Audio('sounds/Tetristitle.m4a');
+    tetris_theme.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+    }, false);
+    tetris_theme.volume = 0.5;
+
+    game_over_theme = new Audio('sounds/gameover.m4a');
+    game_over_theme.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    game_over_theme.volume = 1.0;
 }
 
 function update(){
@@ -87,13 +120,6 @@ function init(){
   create_bags();
   new_tetris();
   matrix = zeros([blocks_y, blocks_x]);
-  tetris_theme = new Audio('sounds/Tetristitle.m4a');
-  tetris_theme.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-  }, false);
-  tetris_theme.volume = 0.5;
-  tetris_theme.play();
 
 }
 
@@ -443,9 +469,17 @@ function keyDown(evt){
     case 80:
       toggle_pause();
       return;
+    case 82: // r
+      reset();
+      init();
+      return;
     case 83: // s
       show_stats = !show_stats;
       break;
+
+    case 49: // 1
+      load_scenario(1);
+      return
 
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
@@ -577,18 +611,18 @@ function toggle_pause() {
 
 function game_over() {
     tetris_theme.pause();
-    game_over_theme = new Audio('sounds/gameover.m4a');
-    game_over_theme.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    game_over_theme.volume = 1.0;
     game_over_theme.play();
 
     game_is_over = true;
 
     disco = true;
     freq = 0;
+}
+
+function load_scenario(n) {
+    reset();
+    init();
+    matrix = scenarios[1];
 }
 
 function shadeBlend(p,c0,c1) {
@@ -601,3 +635,4 @@ function shadeBlend(p,c0,c1) {
         return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
     }
 }
+
