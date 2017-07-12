@@ -14,7 +14,7 @@ var tetrii = {"I": [[0, -2], [0, -1], [0, 0], [0, 1]],
               "O": [[0, -1], [0, 0], [1, -1], [1, 0]]};
 var tcolors = {"I": 1, "T": 2, "Z": 3, "S": 4, "J": 5, "L": 6, "O": 7};
 var colors = {1: "#12c6bb", 2: "#63009b", 3: "#aa0f11", 4: "#15aa10", 5: "#0d37e5",
-              6: "#e9850e", 7: "#d5cf12"};
+              6: "#e9850e", 7: "#d5cf12", 8: "#fc239e"};
 var corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var drop_color = "#333333"
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
@@ -44,6 +44,8 @@ var min_show_drought = 10;
 var pause = false;
 var game_over_theme;
 var tetris_theme;
+var is_scenario = false;
+var scenario_done = false;
 game_is_over = false;
 
 function reset() {
@@ -57,6 +59,8 @@ function reset() {
     pause = false;
     points = 0;
     game_is_over = false;
+    is_scenario = false;
+    scenario_done = false;
     game_over_theme.pause();
     tetris_theme.play();
 }
@@ -108,6 +112,11 @@ function update(){
     ctx.font = "40px Courier";
     ctx.fillStyle = 'pink';
     ctx.fillText("GAME OVER", world.width/2 - 110, world.height/2 - 3);
+  }
+  if(scenario_done) {
+    ctx.font = "40px Courier";
+    ctx.fillStyle = 'lime';
+    ctx.fillText("WELL DONE", world.width/2 - 110, world.height/2 - 73);
   }
   if (fps_counter>=fps){
     heartbeat();
@@ -269,6 +278,8 @@ function full_line_detection(){
     }
   }
 
+  
+
   var new_matrix = [];
   for (var i=0;i<completed_lines.length; i++){
     new_matrix.push(zeros([blocks_x]));
@@ -298,7 +309,23 @@ function full_line_detection(){
   if (completed_lines.length == 2){
     play_sound("sounds/Tetrisggwp.m4a", .8);
   }
+
+  if(is_scenario && completed_lines.length > 0) {
+      check_scenario_completed();
+  }
   //alert(freq);
+}
+
+function check_scenario_completed() {
+    for(var i=0; i<matrix.length; i++) {
+        for(var j=0; j<matrix[i].length; j++) {
+            if(matrix[i][j] == 8) {
+                return false;
+            }
+        }
+    }
+    scenario_done = true;
+    return true;
 }
 
 function play_sound(filename, volume){
@@ -630,6 +657,7 @@ function game_over() {
 function load_scenario(n) {
     reset();
     init();
+    is_scenario = true;
     matrix = scenarios[n];
 }
 
