@@ -485,6 +485,10 @@ function keyDown(evt){
       load_scenario(2);
       return
 
+    case 51: // 3
+      load_scenario(3);
+      return
+
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
     if(rot) {
@@ -626,7 +630,7 @@ function game_over() {
 function load_scenario(n) {
     reset();
     init();
-    matrix = scenarios[1];
+    matrix = scenarios[n];
 }
 
 function shadeBlend(p,c0,c1) {
