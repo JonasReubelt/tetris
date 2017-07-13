@@ -311,7 +311,7 @@ function full_line_detection(){
     play_sound("sounds/Tetrisggwp.m4a", .8);
   }
 
-  if(scneario_nr > 0 && completed_lines.length > 0) {
+  if(scenario_nr > 0 && completed_lines.length > 0) {
       check_scenario_completed();
   }
   //alert(freq);
