@@ -44,7 +44,7 @@ var min_show_drought = 10;
 var pause = false;
 var game_over_theme;
 var tetris_theme;
-var is_scenario = false;
+var scenario_nr = 0;
 var scenario_done = false;
 game_is_over = false;
 
@@ -59,7 +59,7 @@ function reset() {
     pause = false;
     points = 0;
     game_is_over = false;
-    is_scenario = false;
+    scneario_nr = 0;
     scenario_done = false;
     game_over_theme.pause();
     tetris_theme.play();
@@ -116,7 +116,8 @@ function update(){
   if(scenario_done) {
     ctx.font = "40px Courier";
     ctx.fillStyle = 'lime';
-    ctx.fillText("WELL DONE", world.width/2 - 110, world.height/2 - 73);
+    ctx.fillText("SCENARIO #" + scneario_nr, world.width/2 - 110, world.height/2 - 123);
+    ctx.fillText(" WELL DONE", world.width/2 - 110, world.height/2 - 73);
   }
   if (fps_counter>=fps){
     heartbeat();
@@ -310,7 +311,7 @@ function full_line_detection(){
     play_sound("sounds/Tetrisggwp.m4a", .8);
   }
 
-  if(is_scenario && completed_lines.length > 0) {
+  if(scneario_nr > 0 && completed_lines.length > 0) {
       check_scenario_completed();
   }
   //alert(freq);
@@ -504,18 +505,11 @@ function keyDown(evt){
       show_stats = !show_stats;
       break;
 
-    case 49: // 1
-      load_scenario(1);
-      return
-
-    case 50: // 2
-      load_scenario(2);
-      return
-
-    case 51: // 3
-      load_scenario(3);
-      return
-
+  }
+  if(evt.keyCode > 48 && evt.keyCode <= 57) {
+      scenario_nr = evt.keyCode - 48;
+      load_scenario(scenario_nr);
+      return;
   }
   if (collision_detected(future_pos_x, future_pos_y, rot)){
     if(rot) {
@@ -657,7 +651,6 @@ function game_over() {
 function load_scenario(n) {
     reset();
     init();
-    is_scenario = true;
     matrix = scenarios[n];
 }
 
