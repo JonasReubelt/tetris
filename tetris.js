@@ -116,7 +116,7 @@ function update(){
   if(scenario_done) {
     ctx.font = "40px Courier";
     ctx.fillStyle = 'lime';
-    ctx.fillText("SCENARIO #" + scneario_nr, world.width/2 - 110, world.height/2 - 123);
+    ctx.fillText("SCENARIO #" + scenario_nr, world.width/2 - 110, world.height/2 - 123);
     ctx.fillText(" WELL DONE", world.width/2 - 110, world.height/2 - 73);
   }
   if (fps_counter>=fps){
