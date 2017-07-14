@@ -667,7 +667,7 @@ function load_scenario(n) {
             next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
             tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
         }
-        check_scenario_completed function() {
+        check_scenario_completed = function() {
             return false;
         }
         reset();
