@@ -649,15 +649,10 @@ function game_over() {
 }
 
 function load_scenario(n) {
-    if(n == 8) {
-        tetris_set = ["Z", "S"];
-        reset();
-        init();
-        matrix = zeros([blocks_y, blocks_x]);
-        return
-    } 
     if(n == 9) {
-        tetris_set = ["T"];
+        new_tetris = function() {
+            tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
+        }
         reset();
         init();
         matrix = zeros([blocks_y, blocks_x]);
