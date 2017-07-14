@@ -649,6 +649,12 @@ function game_over() {
 }
 
 function load_scenario(n) {
+    if(n == 8) {
+        tetris_set = ["Z", "S"];
+    } 
+    if(n == 9) {
+        tetris_set = ["T"];
+    } 
     reset();
     init();
     matrix = scenarios[n];
