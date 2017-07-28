@@ -51,7 +51,7 @@ game_is_over = false;
 function reset() {
     level = 1;
     freq = 1;
-    total_cleared = 0; 
+    total_cleared = 0;
     drought = 0;
     current_bag = [];
     next_bag = [];
@@ -86,7 +86,7 @@ function setup_music() {
     }, false);
     tetris_theme.volume = 0.5;
 
-    game_over_theme = new Audio('sounds/gameover.m4a');
+    game_over_theme = new Audio('sounds/Tetrisgo.m4a');
     game_over_theme.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
@@ -279,7 +279,7 @@ function full_line_detection(){
     }
   }
 
-  
+
 
   var new_matrix = [];
   for (var i=0;i<completed_lines.length; i++){
@@ -661,7 +661,7 @@ function load_scenario(n) {
         init();
         matrix = zeros([blocks_y, blocks_x]);
         return;
-    } 
+    }
     if(n == 9) {
         new_tetris = function() {
             next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
@@ -674,7 +674,7 @@ function load_scenario(n) {
         init();
         matrix = zeros([blocks_y, blocks_x]);
         return;
-    } 
+    }
     reset();
     init();
     matrix = scenarios[n];
@@ -690,4 +690,3 @@ function shadeBlend(p,c0,c1) {
         return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
     }
 }
-
