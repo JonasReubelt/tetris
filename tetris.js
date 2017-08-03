@@ -293,7 +293,9 @@ function full_line_detection(){
     }
   }
   matrix = new_matrix;
-  add_points(completed_lines.length);
+  if (completed_lines.length > 0){
+    add_points(completed_lines.length);
+  }
   total_cleared += completed_lines.length;
   if(Math.floor(total_cleared/10) - level >= 0) {
       level_up();
@@ -343,9 +345,9 @@ function level_up() {
 }
 
 function add_points(n_lines){
-  var to_add =  n_lines * n_lines * 100 * freq * (freq * n_lines * 10 / passed_frames);
+  var to_add =  n_lines * n_lines * 100 * freq * (freq * n_lines * 50 / passed_frames);
   points += Math.round(to_add);
-  passed_frames = passed_frames / n_lines;
+  passed_frames = passed_frames - n_lines / 4 * passed_frames;
 }
 
 function tetris_dies(){
