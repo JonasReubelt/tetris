@@ -47,6 +47,7 @@ var tetris_theme;
 var scenario_nr = 0;
 var scenario_done = false;
 game_is_over = false;
+var passed_frames = 0;
 
 function reset() {
     level = 1;
@@ -124,6 +125,7 @@ function update(){
     fps_counter = 0;
   }
   fps_counter += freq;
+  passed_frames += 1;
 }
 
 function init(){
@@ -341,7 +343,9 @@ function level_up() {
 }
 
 function add_points(n_lines){
-  points += n_lines * n_lines * 100 * freq;
+  var to_add =  n_lines * n_lines * 100 * freq * (freq * n_lines * 10 / passed_frames);
+  points += Math.round(to_add);
+  passed_frames = passed_frames / n_lines;
 }
 
 function tetris_dies(){
