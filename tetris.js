@@ -512,7 +512,7 @@ function keyDown(evt){
       break;
 
   }
-  if(evt.keyCode > 48 && evt.keyCode <= 57) {
+  if(evt.keyCode > 47 && evt.keyCode <= 57) {
       scenario_nr = evt.keyCode - 48;
       load_scenario(scenario_nr);
       return;
@@ -672,6 +672,19 @@ function load_scenario(n) {
         new_tetris = function() {
             next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
             tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
+        }
+        check_scenario_completed = function() {
+            return false;
+        }
+        reset();
+        init();
+        matrix = zeros([blocks_y, blocks_x]);
+        return;
+    }
+    if(n == 0) {
+        new_tetris = function() {
+            next_tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
+            tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
         }
         check_scenario_completed = function() {
             return false;
