@@ -38,7 +38,7 @@ var fps = 60.;
 var fps_counter = 0;
 var dropping = false;
 var disco = false;
-var show_stats = false;
+var show_stats = true;
 var drought = 0;
 var min_show_drought = 10;
 var pause = false;
@@ -47,11 +47,15 @@ var tetris_theme;
 var scenario_nr = 0;
 var scenario_done = false;
 game_is_over = false;
+var passed_frames = 0;
+var expected_points = [0, 0, 0, 0];
+var last_points = 0;
+var last_lines_cleared = 0;
 
 function reset() {
     level = 1;
     freq = 1;
-    total_cleared = 0; 
+    total_cleared = 0;
     drought = 0;
     current_bag = [];
     next_bag = [];
@@ -86,7 +90,7 @@ function setup_music() {
     }, false);
     tetris_theme.volume = 0.5;
 
-    game_over_theme = new Audio('sounds/gameover.m4a');
+    game_over_theme = new Audio('sounds/Tetrisgo.m4a');
     game_over_theme.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
@@ -124,6 +128,7 @@ function update(){
     fps_counter = 0;
   }
   fps_counter += freq;
+  passed_frames += 1;
 }
 
 function init(){
@@ -188,14 +193,14 @@ function draw_stats(){
     ctx.fillText(N_parts[t],(draw_pos[t] + x_offset + t/3)* block_size,(19.7 ) * block_size);
   }
   ctx.fillStyle = "gray";
-  ctx.fillRect(world.width, world.height - grid_width - 100, world.width*2, grid_width);
+  ctx.fillRect(world.width, world.height - grid_width - 90, world.width*2, grid_width);
 }
 
 function draw_drought(){
   ctx.font = "20px Arial";
   ctx.fillStyle = 'black';
-  ctx.fillText("Long bar drought:",world.width + 50 ,480);
-  ctx.fillText(drought ,world.width + 230 ,480);
+  ctx.fillText("Long bar drought:",world.width + 50 ,495);
+  ctx.fillText(drought ,world.width + 230 ,495);
 }
 
 function draw_next_tetris(){
@@ -207,17 +212,27 @@ function draw_next_tetris(){
   }
 }
 
+
 function draw_points(){
   var p = points.toString();
-  var x_offset = 70;
+  var x_offset = 50;
   ctx.font = "20px Arial";
   ctx.fillStyle = 'black';
-  ctx.fillText("Points:",world.width + x_offset,50);
-  ctx.fillText(p,world.width + x_offset,100);
-  ctx.fillText("Cleared lines:",world.width + x_offset,150);
-  ctx.fillText(total_cleared,world.width + x_offset,200);
-  ctx.fillText("Level:",world.width + x_offset,250);
-  ctx.fillText(level,world.width + x_offset,300);
+  ctx.fillText("Points:",world.width + x_offset, 50);
+  ctx.fillText("Total:",world.width + x_offset + 50, 90);
+  ctx.fillText(p,world.width + x_offset + 130, 90);
+  ctx.fillText("Last:",world.width + x_offset + 50, 130);
+  ctx.fillText(last_points,world.width + x_offset + 130, 130);
+  ctx.fillText("(" + last_lines_cleared + ")", world.width + x_offset + 200, 130);
+  ctx.fillText("Expected:",world.width + x_offset + 50, 170);
+  for (var i=0; i<4; i++){  
+    ctx.fillText(expected_points[i],world.width + x_offset + 65*i - 30, 210);
+  }
+
+  ctx.fillText("Cleared lines:",world.width + x_offset,270);
+  ctx.fillText(total_cleared,world.width + x_offset + 140,270);
+  ctx.fillText("Level:",world.width + x_offset, 320);
+  ctx.fillText(level,world.width + x_offset + 80, 320);
 }
 
 function draw_grid(){
@@ -245,6 +260,9 @@ function draw_block(x, y, bs, color){
 }
 
 function heartbeat(){
+  for (var i=0; i<4;i++){
+    expected_points[i] = Math.round(calc_points(i+1));
+  }
   if(dropping || pause) {
       return;
   }
@@ -279,7 +297,7 @@ function full_line_detection(){
     }
   }
 
-  
+
 
   var new_matrix = [];
   for (var i=0;i<completed_lines.length; i++){
@@ -291,7 +309,11 @@ function full_line_detection(){
     }
   }
   matrix = new_matrix;
-  add_points(completed_lines.length);
+    
+  if (completed_lines.length > 0){
+    last_lines_cleared = completed_lines.length;
+    add_points(completed_lines.length);
+  }
   total_cleared += completed_lines.length;
   if(Math.floor(total_cleared/10) - level >= 0) {
       level_up();
@@ -340,8 +362,16 @@ function level_up() {
     play_sound("sounds/levelup.m4a", .8);
 }
 
+function calc_points(n_lines){
+  return n_lines * n_lines * 10 * freq * (freq * 50 / passed_frames);
+  }
+
 function add_points(n_lines){
-  points += n_lines * n_lines * 100 * freq;
+  var to_add =  calc_points(n_lines)
+  points += Math.round(to_add);
+  last_points = Math.round(to_add);
+  passed_frames = passed_frames - n_lines / 4 * passed_frames;
+  
 }
 
 function tetris_dies(){
@@ -506,7 +536,7 @@ function keyDown(evt){
       break;
 
   }
-  if(evt.keyCode > 48 && evt.keyCode <= 57) {
+  if(evt.keyCode > 47 && evt.keyCode <= 57) {
       scenario_nr = evt.keyCode - 48;
       load_scenario(scenario_nr);
       return;
@@ -664,7 +694,7 @@ function load_scenario(n) {
         init();
         matrix = zeros([blocks_y, blocks_x]);
         return;
-    } 
+    }
     if(n == 9) {
         new_tetris = function() {
             next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
@@ -677,7 +707,20 @@ function load_scenario(n) {
         init();
         matrix = zeros([blocks_y, blocks_x]);
         return;
-    } 
+    }
+    if(n == 0) {
+        new_tetris = function() {
+            next_tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
+            tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
+        }
+        check_scenario_completed = function() {
+            return false;
+        }
+        reset();
+        init();
+        matrix = zeros([blocks_y, blocks_x]);
+        return;
+    }
     reset();
     init();
     matrix = scenarios[n];
@@ -693,4 +736,3 @@ function shadeBlend(p,c0,c1) {
         return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
     }
 }
-
