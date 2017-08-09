@@ -636,6 +636,9 @@ function shuffle(a) {
 
 function toggle_pause() {
     pause = !pause;
+    if(!pause) {
+        heartbeat();
+    }
 }
 
 function game_over() {
