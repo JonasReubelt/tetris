@@ -363,7 +363,7 @@ function level_up() {
 }
 
 function calc_points(n_lines){
-  return n_lines * n_lines * 10 * freq * (freq * freq * 50 / passed_frames);
+  return n_lines * n_lines * 10 * freq * (freq * 50 / passed_frames);
   }
 
 function add_points(n_lines){
