@@ -48,6 +48,8 @@ var scenario_nr = 0;
 var scenario_done = false;
 game_is_over = false;
 var passed_frames = 0;
+var malus = 0;
+var last_malus = 0;
 
 function reset() {
     level = 1;
@@ -103,6 +105,7 @@ function update(){
   draw_grid();
   draw_next_tetris();
   draw_points();
+  draw_malus();
   if(show_stats){
     draw_stats();
   }
@@ -190,14 +193,14 @@ function draw_stats(){
     ctx.fillText(N_parts[t],(draw_pos[t] + x_offset + t/3)* block_size,(19.7 ) * block_size);
   }
   ctx.fillStyle = "gray";
-  ctx.fillRect(world.width, world.height - grid_width - 100, world.width*2, grid_width);
+  ctx.fillRect(world.width, world.height - grid_width - 90, world.width*2, grid_width);
 }
 
 function draw_drought(){
   ctx.font = "20px Arial";
   ctx.fillStyle = 'black';
-  ctx.fillText("Long bar drought:",world.width + 50 ,480);
-  ctx.fillText(drought ,world.width + 230 ,480);
+  ctx.fillText("Long bar drought:",world.width + 50 ,495);
+  ctx.fillText(drought ,world.width + 230 ,495);
 }
 
 function draw_next_tetris(){
@@ -205,8 +208,19 @@ function draw_next_tetris(){
   var positions = next_tetris.pos;
   for (var i=0; i<4; i++){
     var pos = positions[i];
-    draw_block(14 + pos[0], 13 + pos[1], block_size, c);
+    draw_block(14 + pos[0], 14.5 + pos[1], block_size, c);
   }
+}
+
+function draw_malus(){
+  var y_offset = -10;
+  ctx.font = "20px Arial";
+  ctx.fillStyle = 'black';
+  ctx.fillText("Malus:",world.width + 20 , 350 + y_offset);
+    ctx.fillText("current",world.width + 110 , 340 + y_offset);
+  ctx.fillText("last",world.width + 230 , 340 + y_offset);
+  ctx.fillText(malus ,world.width + 110 , 370 + y_offset);
+  ctx.fillText(last_malus ,world.width + 230 , 370 + y_offset);
 }
 
 function draw_points(){
@@ -247,6 +261,7 @@ function draw_block(x, y, bs, color){
 }
 
 function heartbeat(){
+  malus = Math.round(passed_frames);
   if(dropping || pause) {
       return;
   }
@@ -347,7 +362,9 @@ function level_up() {
 function add_points(n_lines){
   var to_add =  n_lines * n_lines * 100 * freq * (freq * n_lines * 50 / passed_frames);
   points += Math.round(to_add);
+  last_malus = Math.round(passed_frames);
   passed_frames = passed_frames - n_lines / 4 * passed_frames;
+  malus = Math.round(passed_frames);
 }
 
 function tetris_dies(){
