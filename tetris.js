@@ -509,9 +509,14 @@ function keyDown(evt){
       future_pos_y = tetris.y + 1;
       break;
     case 38:
-
       rot = true;
       //alert(tetris.o);
+      break;
+    case 187: // =
+      total_cleared = total_cleared + 10;
+      break;
+    case 189: // -
+      total_cleared = total_cleared - 10;
       break;
     case 32:
       console.log("dropping");
@@ -534,7 +539,6 @@ function keyDown(evt){
     case 83: // s
       show_stats = !show_stats;
       break;
-
   }
   if(evt.keyCode > 47 && evt.keyCode <= 57) {
       scenario_nr = evt.keyCode - 48;
