@@ -225,7 +225,7 @@ function draw_points(){
   ctx.fillText(last_points,world.width + x_offset + 130, 130);
   ctx.fillText("(" + last_lines_cleared + ")", world.width + x_offset + 200, 130);
   ctx.fillText("Expected:",world.width + x_offset + 50, 170);
-  for (var i=0; i<4; i++){  
+  for (var i=0; i<4; i++){
     ctx.fillText(expected_points[i],world.width + x_offset + 65*i - 30, 210);
   }
 
@@ -309,7 +309,7 @@ function full_line_detection(){
     }
   }
   matrix = new_matrix;
-    
+
   if (completed_lines.length > 0){
     last_lines_cleared = completed_lines.length;
     add_points(completed_lines.length);
@@ -371,7 +371,7 @@ function add_points(n_lines){
   points += Math.round(to_add);
   last_points = Math.round(to_add);
   passed_frames = passed_frames - n_lines / 4 * passed_frames;
-  
+
 }
 
 function tetris_dies(){
@@ -498,6 +498,7 @@ function keyDown(evt){
   var future_pos_x = tetris.x;
   var future_pos_y = tetris.y;
   var rot = false;
+  console.log(evt.keyCode);
   switch (evt.keyCode) {
     case 37:
       future_pos_x = tetris.x - 1;
@@ -512,12 +513,26 @@ function keyDown(evt){
       rot = true;
       //alert(tetris.o);
       break;
-    case 187: // =
-      total_cleared = total_cleared + 10;
-      break;
-    case 189: // -
-      total_cleared = total_cleared - 10;
-      break;
+    case 77: // m
+      var current_x = tetris.x;
+      console.log(tetris.x);
+      dropping = true;
+      drop_tetris();
+      console.log(tetris.x);
+      tetris_dies();
+      console.log(tetris.x);
+      tetris = {"id": "I", "x": current_x, "y": -10, "pos": tetrii["I"], "o": 0};
+      console.log(tetris.x);
+      dropping = false;
+      return;
+    case 90: // z
+      var current_x = tetris.x;
+      dropping = true;
+      drop_tetris();
+      tetris_dies();
+      tetris = {"id": "T", "x": current_x, "y": -10, "pos": tetrii["T"], "o": 0};
+      dropping = false;
+      return;
     case 32:
       console.log("dropping");
       dropping = true;
