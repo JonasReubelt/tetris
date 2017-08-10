@@ -682,19 +682,19 @@ function game_over() {
 }
 
 function load_scenario(n) {
-    if(n == 8) {
-        new_tetris = function() {
-            next_tetris = {"id": "S", "x": 5, "y": -1, "pos": tetrii["S"], "o": 0};
-            tetris = {"id": "S", "x": 5, "y": -1, "pos": tetrii["S"], "o": 0};
-        }
-        check_scenario_completed = function() {
-            return false;
-        }
-        reset();
-        init();
-        matrix = zeros([blocks_y, blocks_x]);
-        return;
-    }
+    //if(n == 8) {
+    //    new_tetris = function() {
+    //        next_tetris = {"id": "S", "x": 5, "y": -1, "pos": tetrii["S"], "o": 0};
+    //        tetris = {"id": "S", "x": 5, "y": -1, "pos": tetrii["S"], "o": 0};
+    //    }
+    //    check_scenario_completed = function() {
+    //        return false;
+    //    }
+    //    reset();
+    //    init();
+    //    matrix = zeros([blocks_y, blocks_x]);
+    //    return;
+    //}
     if(n == 9) {
         new_tetris = function() {
             next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
