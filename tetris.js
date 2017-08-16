@@ -20,6 +20,8 @@ var drop_color = "#333333"
 var sides = [[0, -1], [1, 0], [0, 1], [-1, 0]];
 var N_parts = [0, 0, 0, 0, 0, 0, 0];
 var freq = 1.;
+
+var level_add = 0;
 var level = 1;
 var increase = 1.;
 var mercy_delay = 1000;
@@ -53,7 +55,6 @@ var last_points = 0;
 var last_lines_cleared = 0;
 
 function reset() {
-    level = 1;
     freq = 1;
     total_cleared = 0;
     drought = 0;
@@ -99,7 +100,7 @@ function setup_music() {
 }
 
 function update(){
-
+  level = freq;
   draw_canvas();
   draw_matrix();
   draw_tetris();
@@ -319,7 +320,7 @@ function full_line_detection(){
       level_up();
   }
 
-  freq = Math.floor(total_cleared/10) + increase;
+  freq = Math.floor(total_cleared/10) + increase + level_add;
   if (completed_lines.length == 4){
     play_sound("sounds/TetrisforJeff2.m4a", .6);
   }
@@ -554,6 +555,11 @@ function keyDown(evt){
     case 83: // s
       show_stats = !show_stats;
       break;
+    case 84: // T
+      level_add=9;
+      level = level + level_add;
+      freq = freq + level_add;
+      return;
   }
   if(evt.keyCode > 47 && evt.keyCode <= 57) {
       scenario_nr = evt.keyCode - 48;
