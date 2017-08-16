@@ -402,11 +402,11 @@ function new_tetris(){
   if (bag_counter < n_set_in_bag * 7 - 1){
     nb = current_bag[bag_counter+1];
     var npos = tetrii[nb];
-    next_tetris = {"id": nb, "x": 5, "y": -1, "pos": npos, "o": 0};
+    next_tetris = {"id": nb, "x": 5, "y": -5, "pos": npos, "o": 0};
   } else {
     nb = next_bag[0];
     var npos = tetrii[nb];
-    next_tetris = {"id": nb, "x": 5, "y": -1, "pos": npos, "o": 0};
+    next_tetris = {"id": nb, "x": 5, "y": -5, "pos": npos, "o": 0};
   }
 
   b = current_bag[bag_counter];
@@ -418,7 +418,7 @@ function new_tetris(){
   if (b == "I"){
     drought =0;
   }
-  tetris = {"id": b, "x": 5, "y": -1, "pos": pos, "o": 0};
+  tetris = {"id": b, "x": 5, "y": -5, "pos": pos, "o": 0};
   N_parts[tcolors[b]-1] += 1;
   console.log("New tetris", tetris);
 }
@@ -722,8 +722,8 @@ function load_scenario(n) {
     //}
     if(n == 9) {
         new_tetris = function() {
-            next_tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
-            tetris = {"id": "T", "x": 5, "y": -1, "pos": tetrii["T"], "o": 0};
+            next_tetris = {"id": "T", "x": 5, "y": -5, "pos": tetrii["T"], "o": 0};
+            tetris = {"id": "T", "x": 5, "y": -5, "pos": tetrii["T"], "o": 0};
         }
         check_scenario_completed = function() {
             return false;
@@ -735,8 +735,8 @@ function load_scenario(n) {
     }
     if(n == 0) {
         new_tetris = function() {
-            next_tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
-            tetris = {"id": "I", "x": 5, "y": -1, "pos": tetrii["I"], "o": 0};
+            next_tetris = {"id": "I", "x": 5, "y": -5, "pos": tetrii["I"], "o": 0};
+            tetris = {"id": "I", "x": 5, "y": -5, "pos": tetrii["I"], "o": 0};
         }
         check_scenario_completed = function() {
             return false;
